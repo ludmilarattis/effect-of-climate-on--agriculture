@@ -1,6 +1,6 @@
 ################
 ##Land Use Transition
-##April 2019
+##September 2021
 ##Ludmila Rattis
 ################
 
@@ -551,8 +551,8 @@ ggplot(df)+
 ##---------------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------------##
 #CRU
-setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados clim�ticos/CRU_4.02")
-setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CRU_4.02")
+setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CRU_4.02")
+setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climaÌticos/CRU_4.02")
 
 list.files()
 tmp = stack("cru_ts4.02.1901.2017.tmp.dat.nc");tmp
@@ -584,8 +584,8 @@ tmp.years = mask(tmp.years,limit)
 # prec.years = mask(prec.years,limit)
 
 #CHIRPS
-setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados clim�ticos/CHIRPS/growing_season_1982-2018/sum")
-setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CHIRPS/growing_season_1982-2018/sum")
+setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CHIRPS/growing_season_1982-2018/sum")
+setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climaÌticos/CHIRPS/growing_season_1982-2018/sum")
 
 ppt = stack(list.files()[23:37]);ppt
 ppt = mask(ppt,limit)
@@ -598,8 +598,8 @@ names(ppt) = paste0('chirps.',2003:2017)
 ###################
 
 #onset x transition
-setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados clim�ticos/CHIRPS")
-setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CHIRPS")
+setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/CHIRPS")
+setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climaÌticos/CHIRPS")
 
 onset = stack("chirps_onset_1982-2016.tif");onset 
 onset = onset[[22:35]];onset
@@ -637,8 +637,8 @@ names(clay) = "clay"
 ##---------------------------------------------------------------------------------##
 ##---------------------------------------------------------------------------------##
 #Terra Climate
-setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados clim�ticos/TerraClimate/vpd")
-setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/TerraClimate/vpd")
+setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/9 - dados climáticos/TerraClimate/vpd")
+setwd("~/Dropbox/IPAM/climate_agriculture/analises/9 - dados climaÌticos/TerraClimate/vpd")
 
 vpd <- stack(list.files()[27:41]);vpd
 vpd = mask(vpd,limit)/100
@@ -1632,237 +1632,3 @@ ss +
              linetype = 2) + 
   stat_compare_means(method = "kruskal.test", label.y = 63,
                      label = "p.signif")
-#################################################
-#########################################################
-#Binomial Models
-#########################################################
-#################################################
-
-vpd.df2 = vpd.df2 %>%
-  mutate(resp = ifelse(var1 %in% 'abandon',0,1))
-
-glimpse(vpd.df2)
-ggplot(vpd.df2,aes(x=vpd,y=resp))+
-  geom_point()+
-  geom_smooth(glm(y~poly(x,2),family='binomial',na.rm=TRUE))+
-  facet_wrap(~Yr,ncol=2)
-
-df2 = cbind(chirps.df2)
-
-# df3 = subset(df2,!is.na(double.single))
-# nrow(df3)
-
-#Regression analysis tidyverse
-# library(lme4)
-# library(dotwhisker)
-# library(broom)
-# 
-# 
-# 
-# mod1.onset = glm(double.single~onset,data=df2,family='binomial')
-# mod3 = glm(double.single~onset+Yr,data=df2,family='binomial')
-# mod4 = glm(double.single~Year,data=df2,family='binomial')
-# mod5 = glm(double.single~onset+Year,data=df2,family='binomial')
-# dwplot(mod5)
-# mod3_df = tidy(mod3);mod3_df
-# 
-# #sensitivity analysis
-# range(df2$onset)
-# xweight=seq(0,120,5)
-# yweight=predict(mod1,list(onset=xweight),type="response")
-# plot(df2$onset, df2$double.single, pch = 16, xlab = "onset (days after 28/8)", ylab = "double - single")
-# lines(xweight, yweight)
-# 
-# range(df2$onset)
-# xyear=as.factor(seq(2002,2016,1))
-# yyear=predict(mod4,list(Year=xyear),type="response")
-# plot(df2$Year, df2$double.single, pch = 16, xlab = "onset (days after 28/8)", ylab = "double - single")
-# lines(xyear, yyear)
-# 
-# by_year_factor = df2%>%
-#   #group_by(Yr) %>%                                         # group data by year
-#   do(tidy(lm(double.single ~ onset+Year, data = .))) %>% # run model on each grp
-#   rename(model=Year) %>%                                     # make model variable
-#   relabel_predictors(c(Year = "Years"))
-# 
-# dwplot(by_year, 
-#        vline = geom_vline(xintercept = 0, colour = "grey60", linetype = 2)) + # plot line at zero _behind_ coefs
-#   theme_bw() + xlab("Coefficient Estimate") + ylab("") +
-#   ggtitle("Predicting Double to Single transition by rainfall onset") #+
-#   # theme(plot.title = element_text(face="bold"),
-#   #       #legend.position = c(-0.005,1),
-#   #       legend.justification = c(0, 0),
-#   #       legend.background = element_rect(colour="grey80"),
-#   #       legend.title.align = .5) +
-#   # scale_colour_grey(start = .3, end = .7,
-#   #                   name = "Transmission",
-#   #                   breaks = c(0, 1),
-#   #                   labels = c("Automatic", "Manual"))
-# 
-# # df2$Year = as.factor(df2$Yr)
-# # mod2 = glmer(double.single~onset+(1|Year),data=df2,family='binomial')
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# f1 = as_tibble(dl.sg.df) %>%#na.omit()%>%
-#   df1$test =  rowSums(is.na(df1))
-#   
-# dl.sg.mod = apply(dl.sg.df, 1, FUN=function(x){glm(x[3:17] ~ x[18:32],family=binomial(link = "logit"))})
-# lapply(dl.sg.mod,summary)
-# 
-# #lm
-# #fun <- function(x) { glm(x[1:15] ~ x[16:30],family=binomial(link = "logit"))$coefficients}
-# fun <- function(x,na.rm=TRUE) { 
-#     glm(x[3:17] ~ x[18:32],family=binomial(link = "logit"))$coefficients}
-# 
-# slope <- calc(st1, fun)
-
-# ########################################################################
-# ########################################################################
-# ##s? soja
-# setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/3 - spera/spera_latlong")
-# library(raster)
-# spera = stack(list.files('.','.tif'));spera
-# rcl=matrix(c(0,1,2,4,5,6,11,13,99,127,1,5,1,1,1,100,1,1,1,1),ncol=2);rcl
-# spera.rec2 = reclassify(spera,rcl)
-# 
-# 
-# rclX=matrix(c(0,1,2,4,5,6,11,13,99,127,0,1,1,1,1,1,0,0,0,0),ncol=2);rclX
-# speraX = reclassify(spera,rclX)
-# 
-# 
-# spera.dif2 = list();for(i in 1:15){spera.dif2[[i]] = spera.rec2[[i]]-spera.rec2[[i+1]]}
-# spera.dif2 = stack(spera.dif2)
-# 
-# rcl2=matrix(c(NA,-95,0,95,4,99,-4,-99,NA,1,NA,-1,-2,-3,2,3),ncol=2);rcl2
-# ss2.rec = reclassify(spera.dif2,rcl2)
-# plot(ss2.rec[[5]])
-# 
-# setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/3 - spera/spera_latlong/spera_transition")
-# writeRaster(ss2.rec,paste0("spera_transition_",2002:2016,".tif"),bylayer=TRUE,options=c("COMPRESS=LZW", "TFW=NO"),overwrite=TRUE)
-# 
-# single_to_double2 = freq(ss2.rec,value=1,progress='window',merge=TRUE);single_to_double
-# double_to_single2 = freq(ss2.rec,value=-1,progress='window',merge=TRUE);double_to_single
-# single_aband2 = freq(ss2.rec,value=-2,progress='window',merge=TRUE);single_aband
-# double_aband2 = freq(ss2.rec,value=-3,progress='window',merge=TRUE);double_aband
-# single_first2 = freq(ss2.rec,value=2,progress='window',merge=TRUE);single_first
-# double_first2 = freq(ss2.rec,value=3,progress='window',merge=TRUE);double_first
-# 
-# spera_pat2 = as.data.frame(cbind(single_to_double2,double_to_single2,single_aband2,double_aband2,single_first2,double_first2));head(spera_pat2)
-# #rownames(spera_pat)=paste0('crop_',2002:2015)
-# spera_pat2$year = c(2002:2016)
-# head(spera_pat2)
-# library(tidyverse)
-# 
-# df = spera_pat2 %>%
-#   gather(type_change,number_change,-year)%>%
-#   mutate(area_km2 = number_change*0.09)
-# 
-# 
-# library(ggplot2)
-# ggplot(df,(aes(x=year,y=area_km2,col=type_change)))+
-#   geom_line()+
-#   geom_point()+
-#   geom_smooth(method='lm')+
-#   facet_wrap(~type_change,ncol=3)
-# 
-# 
-# 
-# library(ggplot2)
-# ggplot(df,(aes(x=year,y=area_km2,col=type_change)))+
-#   geom_line()+
-#   geom_point()+
-#   geom_smooth(method='lm')+
-#   facet_wrap(~type_change,ncol=3)
-# 
-# 
-# 
-# 
-# 
-# 
-# ########################################################################
-# ########################################################################
-# ##s? soja no MT
-# setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/3 - spera/spera_latlong")
-# library(raster)
-# # spera = stack(list.files('.','.tif'));spera
-# # rcl=matrix(c(0,1,2,4,5,6,11,13,99,127,1,5,1,1,1,100,1,1,1,1),ncol=2);rcl
-# # spera.rec2 = reclassify(spera,rcl)
-# # 
-# # spera.dif2 = list();for(i in 1:15){spera.dif2[[i]] = spera.rec2[[i]]-spera.rec2[[i+1]]}
-# # spera.dif2 = stack(spera.dif2)
-# # 
-# # rcl2=matrix(c(NA,-95,0,95,4,99,-4,-99,NA,1,NA,-1,-2,-3,2,3),ncol=2);rcl2
-# # ss2.rec = reclassify(spera.dif2,rcl2)
-# # plot(ss2.rec[[5]])
-# 
-# setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/3 - spera/spera_latlong/spera_transition")
-# writeRaster(ss2.rec,paste0("spera_transition_mt_soy",2002:2016,".tif"),bylayer=TRUE,options=c("COMPRESS=LZW", "TFW=NO"),overwrite=TRUE)
-# ss2.rec = stack(list.files()[16:30])
-# 
-# setwd("C:/Users/Workshop/Dropbox/IPAM/climate_agriculture/analises/produtos_resultados_mt_amazonico/xingu_sem_rebarba")
-# setwd("D:/Ludmila-D/Dropbox/IPAM/produtos_resultados_mt_amazonico/xingu_sem_rebarba")
-# library(rgdal)
-# mt = readOGR("xingu_correto_sem_rebarba.shp")
-# mt.up = subset(mt,Id==2);plot(mt.up)
-# ss3.rec = mask(crop(ss2.rec,mt.up),mt.up);plot(ss3.rec[[5]])
-# 
-# single_to_double3 = freq(ss3.rec,value=1,progress='window',merge=TRUE);single_to_double3
-# double_to_single3 = freq(ss3.rec,value=-1,progress='window',merge=TRUE);double_to_single3
-# single_aband3 = freq(ss3.rec,value=-2,progress='window',merge=TRUE);single_aband3
-# double_aband3 = freq(ss3.rec,value=-3,progress='window',merge=TRUE);double_aband3
-# single_first3 = freq(ss3.rec,value=2,progress='window',merge=TRUE);single_first3
-# double_first3 = freq(ss3.rec,value=3,progress='window',merge=TRUE);double_first3
-# 
-# spera_pat3 = as.data.frame(cbind(single_to_double3,double_to_single3,single_aband3,double_aband3,single_first3,double_first3));head(spera_pat3)
-# #rownames(spera_pat)=paste0('crop_',2002:2015)
-# spera_pat3$year = c(2002:2016)
-# head(spera_pat3)
-# library(tidyverse)
-# df = spera_pat3 %>%
-#   gather(type_change,number_change,-year)%>%
-#   mutate(area_km2 = number_change*0.09)
-# 
-# 
-# library(ggplot2)
-# ggplot(df,(aes(x=year,y=area_km2,col=type_change)))+
-#   geom_line()+
-#   geom_point()+
-#   geom_smooth(method='lm')+
-#   facet_wrap(~type_change,ncol=3)
-# 
-# 
-# 
-
-setwd("~/Dropbox/IPAM/climate_agriculture/Manuscritos/figures_R")
-proj = read_csv("Brazil_projections_ag.csv")
-
-
-scaleFUN <- function(x) sprintf("%.0f", x)
-
-
-proj %>%
-  group_by(year) %>%
-  mutate(prod_total = sum(production)) %>%
-  ggplot(aes(year,prod_total)) + 
-  geom_point(size = 2, shape = 23) +
-  geom_line() +
-  labs(x= "Year", y = "Soybean Production \n(million tonnes)") +
-  lims(x=c(2019,2029)) +
-  theme_classic(base_size = 20) +
-  scale_x_continuous(
-    labels = scaleFUN,
-    breaks = 2019:2029) #+
-  theme(axis.text.x = element_text(angle=45,vjust = -0.001))
-  
